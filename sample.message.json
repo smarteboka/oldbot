@@ -1,0 +1,50 @@
+{
+    "token": "<token>",
+    "team_id": "T0EC3DG3A",
+    "api_app_id": "AGXHANA5D",
+    "event": {
+        "type": "message",
+        "subtype": "message_changed",
+        "hidden": true,
+        "message": {
+            "client_msg_id": "A61DACD9-E220-4119-B75D-2FB5CD364307",
+            "type": "message",
+            "text": "Interessant artikkel om 737 Max: <https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605>",
+            "user": "U0F6BAQ20",
+            "attachments": [
+                {
+                    "service_name": "NRK",
+                    "title": "Flyet som har blitt en hodepine for Boeing",
+                    "title_link": "https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605",
+                    "text": "To fly av typen Boeing 737 MAX har styrtet. Flytypen er vesentlig forskjellig fra tidligere utgaver av 737, men det skulle oppføre seg helt likt. Det kan være en av årsakene til ulykkene.",
+                    "fallback": "NRK: Flyet som har blitt en hodepine for Boeing",
+                    "thumb_url": "https://gfx.nrk.no/nYlaXzGtcpLfyYcxvYV4DgZXYS67lygG7ZevKqfp2RUQ",
+                    "from_url": "https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605",
+                    "thumb_width": 1920,
+                    "thumb_height": 1080,
+                    "service_icon": "https://www.nrk.no/serum/latest/views-dist/type/page/img/apple-touch-icon-114x114.png",
+                    "id": 1,
+                    "original_url": "https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605"
+                }
+            ],
+            "ts": "1552513147.007600"
+        },
+        "channel": "C3P92L5UH",
+        "previous_message": {
+            "client_msg_id": "A61DACD9-E220-4119-B75D-2FB5CD364307",
+            "type": "message",
+            "text": "Interessant artikkel om 737 Max: <https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605>",
+            "user": "U0F6BAQ20",
+            "ts": "1552513147.007600"
+        },
+        "event_ts": "1552513149.007700",
+        "ts": "1552513149.007700",
+        "channel_type": "channel"
+    },
+    "type": "event_callback",
+    "event_id": "EvGY3A8BEG",
+    "event_time": 1552513149,
+    "authed_users": [
+        "U0EBWMGG4"
+    ]
+}
