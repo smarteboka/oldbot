@@ -45,23 +45,26 @@ namespace Oldbot.OldFunction
             if (request.IsSlackChallengeRequest())
             {
                 var challengeRequest = request.Body.As<ChallengeRequest>();
-                return Respond(challengeRequest.Challenge);
+                return Respond(challengeRequest.Challenge, context);
             }
 
             var slackEvent = request.Body.As<SlackEventAPIPayload>();
 
             if (slackEvent == null || slackEvent.Event == null)
             {
-                return Respond("IGNORED");
+                return Respond("IGNORED", context);
             }
             
             if (string.IsNullOrEmpty(slackEvent.Event.Text))
             {
-                return Respond("IGNORED");
+                return Respond("IGNORED", context);
             }
 
             if (slackEvent.Event != null && slackEvent.Event.Text != null && !string.IsNullOrEmpty(slackEvent.Event.Bot_Id))
-                return Respond("BOT");
+                return Respond("BOT", context);
+
+            if (!string.IsNullOrEmpty(slackEvent.Event.SubType) && slackEvent.Event.SubType == "bot_message")
+                return Respond("BOT", context);
            
             var urls = UrlFinder.FindIn(slackEvent.Event.Text);
 
@@ -77,10 +80,10 @@ namespace Oldbot.OldFunction
                     var r = searchResults.messages.matches.FirstOrDefault();
                     
                     if (r == null) 
-                        return Respond($"NO-URL-IN-MSG");
+                        return Respond($"NO-URL-IN-MSG", context);
                     
                     if (r.ts == slackEvent.Event.Ts)
-                        return Respond("NEW");
+                        return Respond("NEW", context);
 
                     var message = $"postet av @{r.username} for {TimeSpanExtensions.Ago(r.ts)} siden.";
                     var response = await _slackClient.SendMessage(slackEvent.GetChannel(), message, slackEvent.Event.Ts, r.permalink);
@@ -92,15 +95,17 @@ namespace Oldbot.OldFunction
                     context.Logger.LogLine("Sent reaction. Response:" + JsonConvert.SerializeObject(reactionResponseBody));
 
                     
-                    return Respond($"OLD");
+                    return Respond($"OLD", context);
                 }
             }
             
-            return Respond($"NO-URL-IN-MSG");
+            return Respond($"NO-URL-IN-MSG", context);
         }
 
-        private static APIGatewayProxyResponse Respond(string body)
+        private static APIGatewayProxyResponse Respond(string body, ILambdaContext context)
         {
+            context.Logger.LogLine($"Treated as: {body}");
+
             return new APIGatewayProxyResponse
             {
                 Body = body,
