@@ -11,7 +11,7 @@ using Amazon.Lambda.APIGatewayEvents;
 using Newtonsoft.Json;
 using Oldbot.OldFunction;
 using Oldbot.Utilities;
-using Oldbot.Utilities.SlackAPIExtensions;
+using Oldbot.Utilities.SlackAPI.Extensions;
 using Oldbot.Utilities.SlackAPIFork;
 
 namespace Oldbot.OldFunction.Tests
@@ -150,7 +150,41 @@ namespace Oldbot.OldFunction.Tests
             Assert.Equal(200, response.StatusCode);
             Assert.Equal(expected, response.Body);
         }
+        
+        [Fact]
+        public async Task Reacts() 
+        {
+            var newMessage = new Event
+            {
+                Channel = "CGY1XJRM1", // public channel #tests
+                Text = "SomeMessage containing an URL https://twitter.com/AukeHoekstra/status/1104095189117911040?s=09",
+                Ts = "1553108688.002800" // https://smarteboka.slack.com/messages/CGY1XJRM1/convo/CGY1XJRM1-1553108688.002800/
+            };
+            var payload = new SlackEventAPIPayload
+            {
+                Event = newMessage
+            };
+            
+            var body = JsonConvert.SerializeObject(payload, JsonSettings.SlackSettings);
+        
+            var request = new APIGatewayProxyRequest
+            {
+                Body = body
+            };
+
+            var UserToken = Environment.GetEnvironmentVariable("SlackApiKeyOauth2");
+            var BotToken = Environment.GetEnvironmentVariable("SlackApiKey");
+
+            var mockClient = new SlackTaskClientExtensions(UserToken, BotToken);
+            
+            var validateOldness = new OldnessValidator(mockClient);
+
+            var response = await validateOldness.Validate(request, new TestLambdaContext());
+            Assert.Equal(200, response.StatusCode);
+            Assert.Equal("OLD", response.Body);
+        }
     }
+    
 
         public class MockClient : ISlackClient
         {
@@ -166,7 +200,16 @@ namespace Oldbot.OldFunction.Tests
 
             public SearchResponseMessages SearchResponse { get; set; }
 
-            public Task<HttpResponseMessage> SendMessage(string getChannel, string message, string eventTs)
+            public Task<HttpResponseMessage> SendMessage(string channel, string message, string eventTs, string permalink)
+            {
+                var httpResponseMessage = new HttpResponseMessage
+                {
+                    Content = new StringContent("MockResponse")
+                };
+                return Task.FromResult(httpResponseMessage);
+            }
+
+            public Task<HttpResponseMessage> AddReactions(string channelId, string thread_ts)
             {
                 var httpResponseMessage = new HttpResponseMessage
                 {

@@ -12,7 +12,7 @@ using SearchResponseMessages = Oldbot.Utilities.SlackAPIFork.SearchResponseMessa
 using SearchSort = Oldbot.Utilities.SlackAPIFork.SearchSort;
 using SearchSortDirection = Oldbot.Utilities.SlackAPIFork.SearchSortDirection;
 using Oldbot.Utilities;
-using Oldbot.Utilities.SlackAPIExtensions;
+using Oldbot.Utilities.SlackAPI.Extensions;
 
 namespace Oldbot.ConsoleApp
 {
@@ -22,8 +22,8 @@ namespace Oldbot.ConsoleApp
         
         public CheckForUrlsMiddleware(IMiddleware next) : base(next)
         {
-            var token = new OldbotConfig().SlackApiKeyOauth2; // crappy DI methods in Noobot
-            _client = new SlackTaskClientExtensions(token);
+            var oldbotConfig = new OldbotConfig();
+            _client = new SlackTaskClientExtensions(oldbotConfig.SlackApiKeyOauth2,oldbotConfig.SlackApiKey);
             HandlerMappings = new[]
             {
                 new HandlerMapping

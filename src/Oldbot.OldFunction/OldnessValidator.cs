@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
 using Newtonsoft.Json;
 using Oldbot.Utilities;
-using Oldbot.Utilities.SlackAPIExtensions;
+using Oldbot.Utilities.SlackAPI.Extensions;
 using Oldbot.Utilities.SlackAPIFork;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -19,14 +17,15 @@ namespace Oldbot.OldFunction
 {
     public class OldnessValidator
     {
-        private static readonly string BotToken = Environment.GetEnvironmentVariable("SlackApiKey");
         private static readonly string UserToken = Environment.GetEnvironmentVariable("SlackApiKeyOauth2");
+        private static readonly string BotToken = Environment.GetEnvironmentVariable("SlackApiKey");
+        
         private readonly ISlackClient _slackClient;
 
         /// <summary>
         /// Default constructor that Lambda will invoke.
         /// </summary>
-        public OldnessValidator() : this(new SlackTaskClientExtensions(UserToken))
+        public OldnessValidator() : this(new SlackTaskClientExtensions(UserToken, BotToken))
         {
         }
 
@@ -83,10 +82,16 @@ namespace Oldbot.OldFunction
                     if (r.ts == slackEvent.Event.Ts)
                         return Respond("NEW");
 
-                    var message = $":older_man: postet av @{r.username} for {TimeSpanExtensions.Ago(r.ts)} siden. {r.permalink}";
-                    var response = await _slackClient.SendMessage(slackEvent.GetChannel(), message, slackEvent.Event.Ts);
+                    var message = $"postet av @{r.username} for {TimeSpanExtensions.Ago(r.ts)} siden.";
+                    var response = await _slackClient.SendMessage(slackEvent.GetChannel(), message, slackEvent.Event.Ts, r.permalink);
                     var body = await response.Content.ReadAsStringAsync();
                     context.Logger.LogLine("Sent message. Response:" + JsonConvert.SerializeObject(body));
+                    
+                    var reactionResponse = await _slackClient.AddReactions(slackEvent.GetChannel(), slackEvent.Event.Ts);
+                    var reactionResponseBody = await reactionResponse.Content.ReadAsStringAsync();
+                    context.Logger.LogLine("Sent reaction. Response:" + JsonConvert.SerializeObject(reactionResponseBody));
+
+                    
                     return Respond($"OLD");
                 }
             }
@@ -107,21 +112,4 @@ namespace Oldbot.OldFunction
             };
         }
     }
-
-    /*
-     *
-     * {
-    "token": "<token>",
-    "team_id": "T0EC3DG3A",
-    "api_app_id": "AGXHANA5D",
-    "event": {
-        "type": "message",
-        "subtype": "message_changed",
-        "hidden": true,
-        "message": {
-            "client_msg_id": "A61DACD9-E220-4119-B75D-2FB5CD364307",
-            "type": "message",
-            "text": "Interessant artikkel om 737 Max: <https://www.nrk.no/urix/flyet-som-har-blitt-en-hodepine-for-boeing-1.14470605>",
-        
-     */
 }

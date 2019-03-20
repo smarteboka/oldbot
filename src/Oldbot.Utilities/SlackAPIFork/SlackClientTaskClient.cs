@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using SlackAPI;
 
@@ -9,11 +7,13 @@ namespace Oldbot.Utilities.SlackAPIFork
 {
     public class SlackTaskClient : SlackClientBase
     {
-        protected readonly string APIToken;
-        
-        public SlackTaskClient(string token)
+        protected readonly string UserAPIToken;
+        protected readonly string BotApiToken;
+
+        public SlackTaskClient(string userAPIToken, string botAPIToken)
         {
-            APIToken = token;
+            UserAPIToken = userAPIToken;
+            BotApiToken = botAPIToken;
         }
         
         public Task<SearchResponseMessages> SearchMessagesAsync(string query, SearchSort? sorting = null, SearchSortDirection? direction = null, bool enableHighlights = false, int? count = null, int? page = null)
@@ -44,7 +44,7 @@ namespace Oldbot.Utilities.SlackAPIFork
         {
             Tuple<string, string>[] tokenArray = new Tuple<string, string>[]
             {
-                new Tuple<string, string>("token", APIToken)
+                new Tuple<string, string>("token", UserAPIToken)
             };
 
             return APIRequestAsync<K>(tokenArray, postParameters);
