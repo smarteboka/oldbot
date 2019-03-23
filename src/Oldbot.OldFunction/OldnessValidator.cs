@@ -17,15 +17,15 @@ namespace Oldbot.OldFunction
 {
     public class OldnessValidator
     {
-        private static readonly string UserToken = Environment.GetEnvironmentVariable("SlackApiKeyOauth2");
-        private static readonly string BotToken = Environment.GetEnvironmentVariable("SlackApiKey");
+        private static readonly string SlackAppToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_SlackApp");
+        private static readonly string SlackBotToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_BotUser");
         
         private readonly ISlackClient _slackClient;
 
         /// <summary>
         /// Default constructor that Lambda will invoke.
         /// </summary>
-        public OldnessValidator() : this(new SlackTaskClientExtensions(UserToken, BotToken))
+        public OldnessValidator() : this(new SlackTaskClientExtensions(SlackAppToken,SlackBotToken))
         {
         }
 
@@ -66,12 +66,13 @@ namespace Oldbot.OldFunction
             if (!string.IsNullOrEmpty(slackEvent.Event.SubType) && slackEvent.Event.SubType == "bot_message")
                 return Respond("BOT", context);
            
-            var urls = UrlFinder.FindIn(slackEvent.Event.Text);
+            var urls = RegexHelper.FindURl(slackEvent.Event.Text);
 
             if (urls.Any())
             {
                 var firstUrl = urls.First();
                 var cleansedUrl = UrlCleaner.CleanForTrackingQueryParams(firstUrl.Value);
+                cleansedUrl = cleansedUrl.TrimEnd('/');
                 var searchResults = await _slackClient.SearchMessagesAsync(cleansedUrl, SearchSort.timestamp, count: 1, direction: SearchSortDirection.asc);
 
                 if (searchResults != null && searchResults.messages.matches.Any())

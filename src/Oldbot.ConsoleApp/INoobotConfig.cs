@@ -2,8 +2,8 @@ namespace Oldbot.ConsoleApp
 {
     internal interface INoobotConfig
     {
-        string SlackApiKey { get; }
-        string SlackApiKeyOauth2 { get; }
+        string SlackApiKeyBotUser { get; }
+        string SlackApiKeySlackApp { get; }
         bool HelpEnabled { get; }
         bool StatsEnabled { get; }
         bool AboutEnabled { get; }

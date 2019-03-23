@@ -23,7 +23,7 @@ namespace Oldbot.ConsoleApp
         public CheckForUrlsMiddleware(IMiddleware next) : base(next)
         {
             var oldbotConfig = new OldbotConfig();
-            _client = new SlackTaskClientExtensions(oldbotConfig.SlackApiKeyOauth2,oldbotConfig.SlackApiKey);
+            _client = new SlackTaskClientExtensions(oldbotConfig.SlackApiKeyBotUser);
             HandlerMappings = new[]
             {
                 new HandlerMapping
@@ -41,7 +41,7 @@ namespace Oldbot.ConsoleApp
         private IEnumerable<ResponseMessage> RespondIfLinkFound(IncomingMessage message, IValidHandle matchedHandle)
         {
             var messages = new List<ResponseMessage>();
-            var urls = UrlFinder.FindIn(message.RawText);
+            var urls = RegexHelper.FindURl(message.RawText);
 
             if (urls.Any())
             {

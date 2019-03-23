@@ -8,9 +8,15 @@ namespace Oldbot.Utilities.SlackAPI.Extensions
 {
     public class SlackTaskClientExtensions : SlackTaskClient, ISlackClient
     {
-        public SlackTaskClientExtensions(string userToken, string botUserToken) : base(userToken, botUserToken)
+        /// <summary>
+        /// Need a seperate bottoken when using the reactions API,
+        /// or else the app will post reactions as the user installing the app :/
+        /// </summary>
+        protected readonly string BotToken;
+        
+        public SlackTaskClientExtensions(string appToken, string bottoken) : base(appToken)
         {
-            
+            BotToken = bottoken;
         }
         
         public async Task<HttpResponseMessage> SendMessage(string channelId, string message, string thread_ts, string permalink)
@@ -22,8 +28,9 @@ namespace Oldbot.Utilities.SlackAPI.Extensions
                 Parse = "full",
                 Link_Names = 1,        
                 thread_ts = thread_ts,
-                unfurl_links = "true",
+                unfurl_links = "false",
                 unfurl_media = "true",
+                as_user = "false",
                 Text = permalink,
                 attachments = new []
                 {
@@ -38,7 +45,7 @@ namespace Oldbot.Utilities.SlackAPI.Extensions
             
             var httpContent = new StringContent(stringContent,Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/chat.postMessage");
-            request.Headers.Add("Authorization", $"Bearer {BotApiToken}");
+            request.Headers.Add("Authorization", $"Bearer {SlackToken}");
             request.Content = httpContent;
 
             return await httpClient.SendAsync(request);
@@ -65,7 +72,7 @@ namespace Oldbot.Utilities.SlackAPI.Extensions
 
             var httpContent = new StringContent(stringContent, Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/reactions.add");
-            request.Headers.Add("Authorization", $"Bearer {BotApiToken}");
+            request.Headers.Add("Authorization", $"Bearer {BotToken}");
             request.Content = httpContent;
             return await httpClient.SendAsync(request);
         }

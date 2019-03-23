@@ -7,13 +7,11 @@ namespace Oldbot.Utilities.SlackAPIFork
 {
     public class SlackTaskClient : SlackClientBase
     {
-        protected readonly string UserAPIToken;
-        protected readonly string BotApiToken;
+        protected readonly string SlackToken;
 
-        public SlackTaskClient(string userAPIToken, string botAPIToken)
+        public SlackTaskClient(string slackToken)
         {
-            UserAPIToken = userAPIToken;
-            BotApiToken = botAPIToken;
+            SlackToken = slackToken;
         }
         
         public Task<SearchResponseMessages> SearchMessagesAsync(string query, SearchSort? sorting = null, SearchSortDirection? direction = null, bool enableHighlights = false, int? count = null, int? page = null)
@@ -44,7 +42,7 @@ namespace Oldbot.Utilities.SlackAPIFork
         {
             Tuple<string, string>[] tokenArray = new Tuple<string, string>[]
             {
-                new Tuple<string, string>("token", UserAPIToken)
+                new Tuple<string, string>("token", SlackToken)
             };
 
             return APIRequestAsync<K>(tokenArray, postParameters);

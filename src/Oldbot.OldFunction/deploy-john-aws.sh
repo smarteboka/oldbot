@@ -1,0 +1,1 @@
+dotnet lambda deploy-function OldbotFunction -frun dotnetcore2.1 -fh Oldbot.OldFunction::Oldbot.OldFunction.OldnessValidator::Validate -ft 10 -fms 128 -cfg ./aws-john.json --aws-secret-key $AWS_SECRET_ACCESS_KEY_JOHN --aws-access-key-id $AWS_ACCESS_KEY_ID_JOHN --disable-interactive true 

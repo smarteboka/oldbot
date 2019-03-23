@@ -1,0 +1,10 @@
+﻿{
+  "profile":"",
+  "region" : "eu-west-1",
+  "configuration": "Release",
+  "framework": "netcoreapp2.1",
+  "s3-prefix": "Oldbot.OldFunction/",
+  "template": "serverless.template",
+  "template-parameters": "",
+  "function-role": "arn:aws:iam::363360165622:role/lambdarole"
+}

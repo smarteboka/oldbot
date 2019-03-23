@@ -3,7 +3,7 @@ using Noobot.Core.Configuration;
 
 namespace Oldbot.ConsoleApp
 {
-    internal class NoobotConfig : IConfigReader, INoobotConfig
+    internal class NoobotConfig : IConfigReader
     {
         private readonly OldbotConfig _config;
 
@@ -18,9 +18,9 @@ namespace Oldbot.ConsoleApp
             return default;
         }
 
-        public string SlackApiKey => _config.SlackApiKey;
+        public string SlackApiKey => _config.SlackApiKeyBotUser;
         
-        public string SlackApiKeyOauth2  => _config.SlackApiKey;
+        public string SlackApiKeySlackApp  => _config.SlackApiKeySlackApp;
 
         public bool HelpEnabled => _config.HelpEnabled;
         public bool StatsEnabled => _config.StatsEnabled;

@@ -6,7 +6,7 @@ namespace Oldbot.ConsoleApp
     {
         public OldbotConfiguration()
         {
-            UseMiddleware<CheckForUrlsMiddleware>();
+            UseMiddleware<SaySomethingMiddleware>();
         }
     }
 }

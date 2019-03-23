@@ -12,6 +12,7 @@ namespace Oldbot.Utilities.SlackAPI.Extensions
         public string thread_ts { get; set; }
         public string unfurl_links { get; set; }
         public string unfurl_media { get; set; }
+        public string as_user { get; set; }
         
         public Attachment[] attachments { get; set; }
     }

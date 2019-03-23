@@ -4,9 +4,9 @@ namespace Oldbot.ConsoleApp
 {
     internal class OldbotConfig : INoobotConfig
     {
-        public string SlackApiKey { get; set; }
+        public string SlackApiKeyBotUser { get; } = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_BotUser");
         
-        public string SlackApiKeyOauth2 { get; } = Environment.GetEnvironmentVariable("SlackApiKeyOauth2");
+        public string SlackApiKeySlackApp { get; } = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_SlackApp");
 
         public bool HelpEnabled { get; set; } = false;
         public bool StatsEnabled { get; set; } = false;

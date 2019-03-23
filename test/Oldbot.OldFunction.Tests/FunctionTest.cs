@@ -172,16 +172,39 @@ namespace Oldbot.OldFunction.Tests
                 Body = body
             };
 
-            var UserToken = Environment.GetEnvironmentVariable("SlackApiKeyOauth2");
-            var BotToken = Environment.GetEnvironmentVariable("SlackApiKey");
+            var botToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_SlackApp");
 
-            var mockClient = new SlackTaskClientExtensions(UserToken, BotToken);
+            var mockClient = new SlackTaskClientExtensions(botToken);
             
             var validateOldness = new OldnessValidator(mockClient);
 
             var response = await validateOldness.Validate(request, new TestLambdaContext());
             Assert.Equal(200, response.StatusCode);
             Assert.Equal("OLD", response.Body);
+        }
+
+        [Fact]
+        public void TestFinders()
+        {
+            AssertChannelRegex("tests", "say this is a thing <#CGY1XJRM1|tests> with other things");
+        }
+
+        [Fact]
+        public void TestUrlFinder()
+        {
+            var expedtedUrl = "https://itunes.apple.com/no/podcast/272-build-tech-anett-andreassen-digitalisering-i-byggebransjen/id1434899825?i=1000431627999&amp;l=nb&amp;mt=2";
+            var message = "https://itunes.apple.com/no/podcast/272-build-tech-anett-andreassen-digitalisering-i-byggebransjen/id1434899825?i=1000431627999&amp;l=nb&amp;mt=2";
+            AssertUrlRegex(expedtedUrl, message);
+        }
+
+        private static void AssertChannelRegex(string expected, string input)
+        {
+            Assert.Equal(expected, RegexHelper.FindChannelName(input));
+        }
+        
+        private static void AssertUrlRegex(string expected, string input)
+        {
+            Assert.Equal(expected, RegexHelper.FindStringURl(input));
         }
     }
     
