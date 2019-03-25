@@ -11,7 +11,7 @@ using Oldbot.Utilities.SlackAPI.Extensions;
 using Oldbot.Utilities.SlackAPIFork;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]//
 
 namespace Oldbot.OldFunction
 {
@@ -92,7 +92,7 @@ namespace Oldbot.OldFunction
                     context.Logger.LogLine("Sent message. Response:" + JsonConvert.SerializeObject(body));
                     
                     var reactionResponse = await _slackClient.AddReactions(slackEvent.GetChannel(), slackEvent.Event.Ts);
-                    var reactionResponseBody = await reactionResponse.Content.ReadAsStringAsync();
+                    var reactionResponseBody = await reactionResponse.First().Content.ReadAsStringAsync();
                     context.Logger.LogLine("Sent reaction. Response:" + JsonConvert.SerializeObject(reactionResponseBody));
 
                     

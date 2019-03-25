@@ -1,13 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <AWSProjectType>Lambda</AWSProjectType>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Amazon.Lambda.RuntimeSupport: to be able to target runtimes not natively installed in AWS -->
+    <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.0.0" />
+    
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.4.0" />
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--AWS Lambda executes the bootstrap shell script as the startup process for your function.-->
+    <Content Include="bootstrap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

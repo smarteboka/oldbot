@@ -23,7 +23,7 @@ namespace Oldbot.ConsoleApp
         public CheckForUrlsMiddleware(IMiddleware next) : base(next)
         {
             var oldbotConfig = new OldbotConfig();
-            _client = new SlackTaskClientExtensions(oldbotConfig.SlackApiKeyBotUser);
+            _client = new SlackTaskClientExtensions(oldbotConfig.SlackApiKeySlackApp, oldbotConfig.SlackApiKeyBotUser);
             HandlerMappings = new[]
             {
                 new HandlerMapping

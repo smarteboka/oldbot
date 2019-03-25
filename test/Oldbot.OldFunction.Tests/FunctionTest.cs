@@ -172,9 +172,10 @@ namespace Oldbot.OldFunction.Tests
                 Body = body
             };
 
-            var botToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_SlackApp");
+            var appToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_SlackApp");
+            var botToken = Environment.GetEnvironmentVariable("OldBot_SlackApiKey_BotUser");
 
-            var mockClient = new SlackTaskClientExtensions(botToken);
+            var mockClient = new SlackTaskClientExtensions(appToken,botToken);
             
             var validateOldness = new OldnessValidator(mockClient);
 
@@ -232,11 +233,14 @@ namespace Oldbot.OldFunction.Tests
                 return Task.FromResult(httpResponseMessage);
             }
 
-            public Task<HttpResponseMessage> AddReactions(string channelId, string thread_ts)
+            public Task<HttpResponseMessage[]> AddReactions(string channelId, string thread_ts)
             {
-                var httpResponseMessage = new HttpResponseMessage
-                {
-                    Content = new StringContent("MockResponse")
+                var httpResponseMessage = new []
+                { 
+                    new HttpResponseMessage
+                    {
+                        Content = new StringContent("MockResponse")
+                    }
                 };
                 return Task.FromResult(httpResponseMessage);
             }

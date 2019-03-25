@@ -2,9 +2,15 @@
   "profile":"",
   "region" : "eu-west-1",
   "configuration": "Release",
-  "framework": "netcoreapp2.1",
+  "framework": "netcoreapp2.2",
   "s3-prefix": "Oldbot.OldFunction/",
   "template": "serverless.template",
   "template-parameters": "",
-  "function-role": "arn:aws:iam::363360165622:role/lambdarole"
+  "function-role": "arn:aws:iam::363360165622:role/lambdarole",
+  "function-runtime":"provided",
+  "function-memory-size" : 256,
+  "function-timeout" : 30,
+  "function-handler" : "not_required_for_custom_runtime",
+  "function-name" : "CustomRuntimeFunction",
+  "msbuild-parameters": "--self-contained true"
 }
