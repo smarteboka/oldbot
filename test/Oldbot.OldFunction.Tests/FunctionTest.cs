@@ -181,7 +181,7 @@ namespace Oldbot.OldFunction.Tests
 
             var response = await validateOldness.Validate(request, new TestLambdaContext());
             Assert.Equal(200, response.StatusCode);
-            Assert.Equal("OLD", response.Body);
+            Assert.Equal("ALREADY-OLDED", response.Body);
         }
 
         [Fact]
