@@ -5,7 +5,7 @@ namespace Oldbot.Utilities
 {
     public static class RegexHelper
     {
-        private static readonly Regex UrlsRegex = new Regex("((http(s)?://|www\\.)([A-Z0-9.-:]{1,})\\.[0-9A-Z?;~&#=\\-_\\./]{2,})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex UrlsRegex = new Regex("((http(s)?://|www\\.)([A-Z0-9.\\-:]{1,})\\.[0-9A-Z?;~&#=\\-_\\./]{2,})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static MatchCollection FindURl(string messageText)
         {
