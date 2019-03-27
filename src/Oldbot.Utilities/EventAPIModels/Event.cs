@@ -14,5 +14,6 @@ namespace Oldbot.OldFunction
         public string Channel { get; set; }
         public string Bot_Id { get; set; }
         public string SubType { get; set; }
+        public string User { get; set; }
     }
 }

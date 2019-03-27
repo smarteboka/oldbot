@@ -125,32 +125,43 @@ namespace Oldbot.OldFunction.Tests
             Assert.Equal("NEW", response.Body);
         }
 
-        private static async Task TestIt(string expected, string slackMessage)
+        [Fact]
+        public async Task DoesNotOldIfIsSameAuthor()
         {
-            var payload = new SlackEventAPIPayload
+            var mockClient = new MockClient();
+            
+            var existingMessage = new Event
+            {
+                Text = "A historic tale. I told you about http://db.no some time ago",
+                User = "U0F3P72QM",
+                Ts = "1550000000.000000" //
+            };
+            mockClient.SetSearchResponse(existingMessage);
+            
+            var newMessage = new SlackEventAPIPayload
             {
                 Event = new Event
                 {
-                    Channel = "CGWGZ90KV", // private channel #bottestsmore
-                    Text = slackMessage,
-                    Ts = "1552671375.000200"
+                    Text = "Woot, me, U0F3P72QM, is repeating the url http://db.no some time later",
+                    User = "U0F3P72QM",
+                    Ts = "1660000000.000000"
                 }
             };
-
-            var body = JsonConvert.SerializeObject(payload, JsonSettings.SlackSettings);
-
+            
+            var body = JsonConvert.SerializeObject(newMessage, JsonSettings.SlackSettings);
+        
             var request = new APIGatewayProxyRequest
             {
                 Body = body
             };
-
-            var validateOldness = new OldnessValidator();
+            
+            var validateOldness = new OldnessValidator(mockClient);
 
             var response = await validateOldness.Validate(request, new TestLambdaContext());
             Assert.Equal(200, response.StatusCode);
-            Assert.Equal(expected, response.Body);
+            Assert.Equal("OLD-BUT-SAME-USER-SO-IGNORING", response.Body);            
         }
-        
+
         [Fact]
         public async Task Reacts() 
         {
@@ -203,10 +214,36 @@ namespace Oldbot.OldFunction.Tests
         {
             Assert.Equal(expected, RegexHelper.FindChannelName(input));
         }
-        
+
         private static void AssertUrlRegex(string expected, string input)
         {
             Assert.Equal(expected, RegexHelper.FindStringURl(input));
+        }
+
+        private static async Task TestIt(string expected, string slackMessage)
+        {
+            var payload = new SlackEventAPIPayload
+            {
+                Event = new Event
+                {
+                    Channel = "CGWGZ90KV", // private channel #bottestsmore
+                    Text = slackMessage,
+                    Ts = "1552671375.000200"
+                }
+            };
+
+            var body = JsonConvert.SerializeObject(payload, JsonSettings.SlackSettings);
+
+            var request = new APIGatewayProxyRequest
+            {
+                Body = body
+            };
+
+            var validateOldness = new OldnessValidator();
+
+            var response = await validateOldness.Validate(request, new TestLambdaContext());
+            Assert.Equal(200, response.StatusCode);
+            Assert.Equal(expected, response.Body);
         }
     }
     
@@ -229,7 +266,7 @@ namespace Oldbot.OldFunction.Tests
             {
                 var httpResponseMessage = new HttpResponseMessage
                 {
-                    Content = new StringContent("MockResponse")
+                    Content = new StringContent("{}")
                 };
                 return Task.FromResult(httpResponseMessage);
             }
@@ -240,7 +277,8 @@ namespace Oldbot.OldFunction.Tests
                 { 
                     new HttpResponseMessage
                     {
-                        Content = new StringContent("MockResponse")
+                        Content = new StringContent("{}"),
+                        
                     }
                 };
                 return Task.FromResult(httpResponseMessage);
@@ -257,7 +295,8 @@ namespace Oldbot.OldFunction.Tests
                             new ContextMessage
                             {
                                 text = newMessage.Text,
-                                ts = newMessage.Ts
+                                ts = newMessage.Ts,
+                                user = newMessage.User
                             }
                         }
                     }

@@ -89,6 +89,8 @@ namespace Oldbot.OldFunction
                     if (r.ts == slackEvent.Event.Ts)
                         return Respond("NEW", context);
 
+                    if (r.user == slackEvent.Event.User)
+                        return Respond("OLD-BUT-SAME-USER-SO-IGNORING", context);
                     
                     var reactionResponse = await _slackClient.AddReactions(slackEvent.GetChannel(), slackEvent.Event.Ts);
                     var alreadyReacted = reactionResponse.Any(AlreadyReactedTo);
